@@ -2,17 +2,16 @@
 
 void configureLED()
 {
+	// Espera-se que os clocks sejam habilitados na aplicação.
 	// habilitar o clock para o modulo GPIO (UM10398, 3.5.14)
-	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 6);
+	// habilitar o clock para o bloco IOCON (UM10398, 3.5.14)
+	// (clocks.h)
 
 	// Configurar GPIO3[0] (P0_3) como saída (UM10398, seção 12.3.2)
 	LPC_GPIO3->DIR |= (1 << PINO_LED1_4);
 	LPC_GPIO1->DIR |= (1 << PINO_LED2);
 	LPC_GPIO1->DIR |= (1 << PINO_LED3);
 	LPC_GPIO1->DIR |= (1 << PINO_LED1_4);
-
-	// habilitar o clock para o bloco IOCON (UM10398, 3.5.14)
-	LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 16);
 
 	LPC_IOCON->R_PIO1_2 = 0x081;
 	LPC_IOCON->R_PIO1_1 = 0x081;
