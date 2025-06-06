@@ -33,8 +33,9 @@ void bit_clr(volatile uint32_t *end, uint8_t bit) {
 }
 
 void delay_ms(unsigned int tempo) {
-    for (unsigned int i = 0; i < tempo * 3000; i++) __NOP();
+    for (unsigned int i = 0; i < tempo * 1000; i++) __NOP(); // Aproximadamente 1 ms com 12 MHz
 }
+
 
 // === ENVIA 4 BITS PARA O LCD ===
 void envia_nibble(uint8_t nibble) {
@@ -128,4 +129,17 @@ void LCD_set_cursor(uint8_t linha, uint8_t coluna)
     }
 
     LCD_cmd(0x80 | endereco);
+}
+
+char* convertBCD_ASCII(char word){
+
+  static char buffer[3];
+
+  // Somo o zero  com aspas simples para conversão para ASCII
+  buffer[0] = ((word >> 4) & 0x0F) + '0';  // dezena
+  buffer[1] = (	word 	   & 0x0F) + '0';  // unidade
+  buffer[2] = '\0';
+
+  return buffer;
+
 }

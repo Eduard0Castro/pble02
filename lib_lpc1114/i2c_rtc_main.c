@@ -19,28 +19,56 @@ int main(void)
     LCD_cmd(0x0F); // Cursor piscando
     I2C_Config();
 
+    char config[6];
+    char tempo[3];
 
-    unsigned int i;
-    char dados[2];
+    // Posicionar o RTC em seu registro de segundos (MCP7940, tabela 5.1)
+    config[0] = 0x00;            // endereço segundos
+    config[1] = 0x80;            // 00s com ST ligado
+    config[2] = 0x01;            // endereço minutos
+    config[3] = 0x23;            // 30 min
+    config[4] = 0x02;            // endereço horas
+    config[5] = 0x01;            // 00h
 
-    dados[0] = 0x00; // registro de segundos (MCP7940, tabela 5.1)
-    dados[1] = 0x80; // 10 segundos (BCD) e CH em 0 para habilitar o clock(MCP7940, tabela 5.1)
+	// Sinalizar operação de escrita a partir dos endereçoes apontador:
 
-    I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char *)&dados[0], 2);
+    //Escreva o conteudo de config[1] em config[0]
+    I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char*)&config[0], 2);
+    //Escreva o conteudo de config[3] em config[2]
+    I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char*)&config[2], 2);
+    //Escreva o conteudo de config[5] em config[4]
+    I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char*)&config[4], 2);
+
     acendeLEDS();
+
 
     while (1)
     {
-        // Posicionar o RTC em seu registro de segundos (MCP7940, tabela 5.1)
-        dados[0] = 0x00;
-        I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char *)&dados[0], 1);
 
-        // Ler o valor corrente do registro de segundos do RTC (em formato BCD) para a variável 'dados[1]'
-        I2C_Receber(K_ENDERECO_MCP7940, (unsigned char *)&dados[1], 1);
-        for (i = 0; i < 0xFFFFF; i++)
-            ; // gerar um atraso
+    	// Sinaliza operação a ser feito nos endereços previamente especificados:
+    	I2C_Transmitir(K_ENDERECO_MCP7940,  (unsigned char*)&config, 1);
+
+    	// Recebe no vetor tempo o conteúdo de 0x00, 0x01 e 0x02 (segundos, minutos e hora)
+    	I2C_Receber(K_ENDERECO_MCP7940,  (unsigned char*)&tempo, 3);
+		delay_ms(500);
+
 		toggleLEDS();
-        writeSerial(dados[1] & 0x7F);
+
+		// Limpo o último bit
+		char segundos = tempo[0] & 0x7F;
+		char minutos  = tempo[1] & 0x7F;
+		char horas    = tempo[2] & 0x3F; //Hora usa até o bit 5
+
+        writeSerial(segundos);
+
+        LCD_set_cursor(0, 0);
+        LCD_escreve(convertBCD_ASCII(horas));
+        LCD_escreve(":");
+        LCD_escreve(convertBCD_ASCII(minutos));
+        LCD_escreve(":");
+        LCD_escreve(convertBCD_ASCII(segundos));
+
+
     }
     return 0;
 }
