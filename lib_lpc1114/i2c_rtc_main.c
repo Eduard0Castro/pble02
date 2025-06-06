@@ -26,11 +26,12 @@ int main(void)
     config[0] = 0x00;            // endereço segundos
     config[1] = 0x80;            // 00s com ST ligado
     config[2] = 0x01;            // endereço minutos
-    config[3] = 0x23;            // 30 min
+    config[3] = 0x23;            // 23 min
     config[4] = 0x02;            // endereço horas
-    config[5] = 0x01;            // 00h
+    config[5] = 0x01;            // 01h
 
-	// Sinalizar operação de escrita a partir dos endereçoes apontador:
+    
+    // Sinalizar operação de escrita a partir dos endereçoes apontador:
 
     //Escreva o conteudo de config[1] em config[0]
     I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char*)&config[0], 2);
@@ -50,14 +51,14 @@ int main(void)
 
     	// Recebe no vetor tempo o conteúdo de 0x00, 0x01 e 0x02 (segundos, minutos e hora)
     	I2C_Receber(K_ENDERECO_MCP7940,  (unsigned char*)&tempo, 3);
-		delay_ms(500);
+        delay_ms(500);
 
-		toggleLEDS();
+        toggleLEDS();
 
-		// Limpo o último bit
-		char segundos = tempo[0] & 0x7F;
-		char minutos  = tempo[1] & 0x7F;
-		char horas    = tempo[2] & 0x3F; //Hora usa até o bit 5
+        // Limpo o último bit
+        char segundos = tempo[0] & 0x7F;
+        char minutos  = tempo[1] & 0x7F;
+        char horas    = tempo[2] & 0x3F; //Hora usa até o bit 5
 
         writeSerial(segundos);
 
