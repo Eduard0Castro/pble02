@@ -143,3 +143,20 @@ char* convertBCD_ASCII(char word){
   return buffer;
 
 }
+
+void LCD_Int(int num){
+
+	char buffer[6];
+    if (num < 0) {
+        num = num * (-1);
+        LCD_envia_byte('-', 1);
+    }
+    buffer[0] = (num / 10000) % 10 + 48;
+    buffer[1] = (num / 1000) % 10 + 48;
+    buffer[2] = (num / 100) % 10 + 48;
+    buffer[3] = (num / 10) % 10 + 48;
+    buffer[4] = (num / 1) % 10 + 48;
+    buffer[5] = '\0';
+
+    LCD_escreve(buffer);
+}

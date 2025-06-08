@@ -30,3 +30,4 @@ void LCD_caractere(const char *caractere);
 void pulso_enable();
 void LCD_set_cursor(uint8_t linha, uint8_t coluna);
 char * convertBCD_ASCII(char);
+void LCD_Int(int);

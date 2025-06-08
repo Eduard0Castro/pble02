@@ -2,15 +2,12 @@
 
 void configureButtons()
 {
-    // habilitar o clock para o modulo GPIO (UM10398, 3.5.14)
-    LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 6);
-
     // Configurar os pinos dos botoes com entrada
-    LPC_GPIO0->DIR &= (0 << LEFT);
-    LPC_GPIO0->DIR &= (0 << SELECT);
-    LPC_GPIO2->DIR &= (0 << UP);
-    LPC_GPIO2->DIR &= (0 << DOWN);
-    LPC_GPIO2->DIR &= (0 << RIGHT);
+    LPC_GPIO0->DIR &= ~(1 << LEFT);
+    LPC_GPIO0->DIR &= ~(1 << SELECT);
+    LPC_GPIO2->DIR &= ~(1 << UP);
+    LPC_GPIO2->DIR &= ~(1 << DOWN);
+    LPC_GPIO2->DIR &= ~(1 << RIGHT);
 }
 
 char readButtons()
