@@ -26,11 +26,10 @@ int main(void)
     config[0] = 0x00;            // endereço segundos
     config[1] = 0x80;            // 00s com ST ligado
     config[2] = 0x01;            // endereço minutos
-    config[3] = 0x23;            // 23 min
+    config[3] = 0x30;            // 30 min
     config[4] = 0x02;            // endereço horas
-    config[5] = 0x01;            // 01h
+    config[5] = 0x17;            // 17h
 
-    
     // Sinalizar operação de escrita a partir dos endereçoes apontador:
 
     //Escreva o conteudo de config[1] em config[0]
@@ -41,7 +40,7 @@ int main(void)
     I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char*)&config[4], 2);
 
     acendeLEDS();
-
+    LCD_escreve("Horario: ");
 
     while (1)
     {
@@ -62,7 +61,7 @@ int main(void)
 
         writeSerial(segundos);
 
-        LCD_set_cursor(0, 0);
+        LCD_set_cursor(1, 0);
         LCD_escreve(convertBCD_ASCII(horas));
         LCD_escreve(":");
         LCD_escreve(convertBCD_ASCII(minutos));
