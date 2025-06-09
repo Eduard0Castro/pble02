@@ -1,33 +1,38 @@
-#include "LED.h"
-#include "peripherics.h"
+#include "LPC11xx.h"
+#include "system_LPC11xx.h"
+#include "LCD.h"
+#include "clocks.h"
 #include "serial.h"
+#include "LED.h"
+#include "event.h"
+#include "var.h"
+#include "stateMachine.h"
+#include "output.h"
+#include "i2c_rtc.h"
+
 
 int main(void)
 {
-    configureButtons();
+
+    //  init das bibliotecas
+    clocks_config();
     configureLED();
-	configureSerial();
-
-    char button, serial;
-
     apagaLEDS();
-    while (1)
-    {
-    	button = readButtons();
+    configureSerial();
+    LCD_pin_config();
+    outputInit();
+    eventInit();
+    varInit();
+    I2C_Config();
+    //timerInit();
 
-    	if(button == 'u') toggleLED(1);
-    	if(button == 'l') toggleLED(2);
-    	if(button == 'd') toggleLED(3);
-    	if(button == 'r') toggleLED(4);
-    	if(button == 's') {
-    		serial = readSerial();
-    		if(serial == '1') toggleLED(1);
-    		if(serial == '2') toggleLED(2);
-    		if(serial == '3') toggleLED(3);
-    		if(serial == '4') toggleLED(4);
-    		if(serial == 'a') acendeLEDS();
-    	}
 
+    for (;;) {
+        //timerReset(getTime());
+
+        //state machine:
+        smLoop();
+        //timerWait();
     }
     return 0;
 }

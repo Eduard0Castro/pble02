@@ -8,26 +8,28 @@
 #include "var.h"
 #include "stateMachine.h"
 #include "output.h"
+#include "i2c_rtc.h"
 
-#define K_ENDERECO_MCP7940 0x6F // Endereço em 7 bits 654 3210
 
 int main(void)
 {
 
-	//  init das bibliotecas
+    //  init das bibliotecas
     clocks_config();
     configureLED();
     apagaLEDS();
     configureSerial();
     LCD_pin_config();
-	outputInit();
-	eventInit();
-	varInit();
+    outputInit();
+    eventInit();
+    varInit();
+    I2C_Config();
     //timerInit();
+
 
     for (;;) {
         //timerReset(getTime());
-        
+
         //state machine:
         smLoop();
         //timerWait();

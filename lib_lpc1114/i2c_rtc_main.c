@@ -25,7 +25,7 @@ int main(void)
     while (1)
     {
 
-    	getRTCTime(tempo, &config);
+        getRTCTime(tempo, &config);
         delay_ms(500);
         toggleLEDS();
 
