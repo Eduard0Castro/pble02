@@ -6,3 +6,5 @@
 void I2C_Config();
 void I2C_Transmitir(unsigned char endereco, unsigned char *valor, unsigned char qtd);
 void I2C_Receber(unsigned char endereco, unsigned char *valor, unsigned char qtd);
+char * timeConfig(char, char, char);
+void getRTCTime(char *tempo, char * config);
