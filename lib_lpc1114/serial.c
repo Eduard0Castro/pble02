@@ -23,8 +23,14 @@ void configureSerial(){
 
 char readSerial(){
 	char c;
+	unsigned int wait_time = 0;
     // Ler o caracter recebido (UM10398, 13.5.2)
-    while (!(LPC_UART->LSR & 0x01)); // espera até que o FIFO de recepção não esteja vazio
+    // espera até que o FIFO de recepção não esteja vazio
+    while (!(LPC_UART->LSR & 0x01)){
+    	if(wait_time >= 4) return ' ';
+    	for (unsigned int i = 0; i < 5 * 1000; i++) __NOP();
+    	wait_time++;
+    }
     c = LPC_UART->RBR; // lê o FIFO de recepção (UM10398, 13.5.2)
 
     // Esperar pelo fim da transmissão atual (bit TEMT, UM10398, 13.5.9)
