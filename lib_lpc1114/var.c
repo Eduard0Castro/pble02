@@ -89,7 +89,7 @@ void setHorario(){
 void updateHorario(){
 
     char tempo[3];
-    getRTCTime(tempo, &config);
+    getRTCData(tempo, &config);
     // Limpo o último bit
     segundo = tempo[0] & 0x7F;
     minuto  = tempo[1] & 0x7F;
