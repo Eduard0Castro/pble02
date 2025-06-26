@@ -115,11 +115,34 @@ char * timeConfig(char hora, char minuto, char segundo){
 
 }
 
-void getRTCTime(char * time, char * config){
+void getRTCData(char * data, char * config){
 
 	// Sinaliza operação a ser feito nos endereços previamente especificados:
 	I2C_Transmitir(K_ENDERECO_MCP7940,  (unsigned char*)config, 1);
 
 	// Recebe no vetor tempo o conteúdo de 0x00, 0x01 e 0x02 (segundos, minutos e hora)
-	I2C_Receber(K_ENDERECO_MCP7940,  (unsigned char*)time, 3);
+	I2C_Receber(K_ENDERECO_MCP7940,  (unsigned char*)data, 3);
+}
+
+char * dateConfig(char dia, char mes, char ano){
+	static char config[6];
+
+	// Posicionar o RTC em seu registro de Date (MCP7940, tabela 2)
+	config[0] = 0x04;            	// endereço dia
+	config[1] = dia;				// 00s com ST ligado
+	config[2] = 0x05;            	// endereço mes
+	config[3] = mes;          		// 30 min
+	config[4] = 0x06;           	// endereço ano
+	config[5] = ano;            	// 17h
+
+	// Sinalizar operação de escrita a partir dos endereçoes apontador:
+
+	//Escreva o conteudo de config[1] em config[0]
+	I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char*)&config[0], 2);
+	//Escreva o conteudo de config[3] em config[2]
+	I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char*)&config[2], 2);
+	//Escreva o conteudo de config[5] em config[4]
+	I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char*)&config[4], 2);
+
+	return config;
 }
