@@ -24,15 +24,11 @@ int main(void)
     eventInit();
     varInit();
     I2C_Config();
-    //timerInit();
 
 
     for (;;) {
-        //timerReset(getTime());
-
         //state machine:
         smLoop();
-        //timerWait();
     }
     return 0;
 }

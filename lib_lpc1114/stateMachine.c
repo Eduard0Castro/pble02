@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <string.h>
 #include "var.h"
 #include "stateMachine.h"
 #include "event.h"
@@ -15,7 +17,7 @@ void smLoop(void) {
     evento = eventRead();
 
     switch (getState()) {
-        
+
         case STATE_ALARME:
             //execucao de atividade
             if (evento == EV_RIGHT) {
@@ -24,11 +26,14 @@ void smLoop(void) {
             if (evento == EV_LEFT) {
                 setAlarmLevel(getAlarmLevel() - 1);
             }
-
+            if(evento == EV_PROTOCOL){
+				setAlarmLevel(atoi(getProtocolMSG()));
+            }
             //gestao da maquina de estado
             if (evento == EV_ENTER) {
                 setState(STATE_TEMPO);
             }
+
             break;
 
         case STATE_TEMPO:
@@ -41,6 +46,9 @@ void smLoop(void) {
                 setTime(getTime() - 1);
             }
 
+            if(evento == EV_PROTOCOL){
+				setTime(atoi(getProtocolMSG()));
+            }
             //gestao da maquina de estado
             if (evento == EV_ENTER) {
                 setState(STATE_IDIOMA);
@@ -55,6 +63,12 @@ void smLoop(void) {
             }
             if (evento == EV_LEFT) {
                 setLanguage(getLanguage() - 1);
+            }
+
+            if(evento == EV_PROTOCOL){
+            	char *language = getProtocolMSG();
+            	if(strcmp(language, "EN")==0)setLanguage(1);
+            	else if(strcmp(language, "PT") == 0) setLanguage(0);
             }
 
             //gestao da maquina de estado
@@ -72,7 +86,9 @@ void smLoop(void) {
             if (evento == EV_LEFT) {
                 setHora(getHora()-1);
             }
-
+            if(evento == EV_PROTOCOL){
+				setHora(atoi(getProtocolMSG()));
+            }
             //gestao da maquina de estado
             if (evento == EV_ENTER) {
                 setState(STATE_MINUTO);
@@ -88,7 +104,10 @@ void smLoop(void) {
             if (evento == EV_LEFT) {
                 setMinuto(getMinuto()- 1);
             }
+            if(evento == EV_PROTOCOL){
+				setMinuto(atoi(getProtocolMSG()));
 
+            }
             //gestao da maquina de estado
             if (evento == EV_ENTER) {
                 setState(STATE_SEGUNDO);
@@ -103,6 +122,9 @@ void smLoop(void) {
             }
             if (evento == EV_LEFT) {
                 setSegundo(getSegundo()- 1);
+            }
+            if(evento == EV_PROTOCOL){
+				setSegundo(atoi(getProtocolMSG()));
             }
 
             //gestao da maquina de estado
@@ -119,6 +141,16 @@ void smLoop(void) {
 
             if (evento == EV_ENTER) {
                 setState(STATE_ALARME);
+            }
+            if(evento == EV_PROTOCOL){
+				char * horario = getProtocolMSG();
+				char hora[2] = {horario[0], horario[1]};
+				char minuto[2] = {horario[2], horario[3]};
+				char segundo[2] = {horario[4], horario[5]};
+				setHora(atoi(hora));
+				setMinuto(atoi(minuto));
+				setSegundo(atoi(segundo));
+				setHorario();
             }
 
             break;

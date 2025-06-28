@@ -6,10 +6,12 @@ enum{
     EV_LEFT,
     EV_RIGHT,
     EV_ENTER,
+	EV_PROTOCOL,
     EV_NOEVENT
 };
 void eventInit(void);
 unsigned int eventRead(void);
+char *getProtocolMSG();
 
 #endif	/* EVENT_H */
 
