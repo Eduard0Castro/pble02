@@ -83,7 +83,7 @@ void setHorario(){
     uint32_t minuto_ = dec2bcd(minuto);
     uint32_t segundo_ = dec2bcd(segundo);
 
-    config = *timeConfig(hora_, minuto_, segundo_);
+    config = *RTCConfig(0, hora_, minuto_, segundo_);
 }
 
 void updateHorario(){

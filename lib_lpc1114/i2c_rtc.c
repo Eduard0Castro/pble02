@@ -90,30 +90,6 @@ void I2C_Receber(unsigned char endereco, unsigned char *valor, unsigned char qtd
     LPC_I2C->CONCLR = (1 << 3);
 }
 
-char * timeConfig(char hora, char minuto, char segundo){
-
-    static char config[6];
-
-    // Posicionar o RTC em seu registro de segundos (MCP7940, tabela 5.1)
-    config[0] = 0x00;            // endereço segundos
-    config[1] = 0x80 | segundo;            // 00s com ST ligado
-    config[2] = 0x01;            // endereço minutos
-    config[3] = minuto;            // 30 min
-    config[4] = 0x02;            // endereço horas
-    config[5] = hora;            // 17h
-
-    // Sinalizar operação de escrita a partir dos endereçoes apontador:
-
-    //Escreva o conteudo de config[1] em config[0]
-    I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char*)&config[0], 2);
-    //Escreva o conteudo de config[3] em config[2]
-    I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char*)&config[2], 2);
-    //Escreva o conteudo de config[5] em config[4]
-    I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char*)&config[4], 2);
-
-    return config;
-
-}
 
 void getRTCData(char * data, char * config){
 
@@ -124,25 +100,38 @@ void getRTCData(char * data, char * config){
 	I2C_Receber(K_ENDERECO_MCP7940,  (unsigned char*)data, 3);
 }
 
-char * dateConfig(char dia, char mes, char ano){
-	static char config[6];
 
-	// Posicionar o RTC em seu registro de Date (MCP7940, tabela 2)
-	config[0] = 0x04;            	// endereço dia
-	config[1] = dia;				// 00s com ST ligado
-	config[2] = 0x05;            	// endereço mes
-	config[3] = mes;          		// 30 min
-	config[4] = 0x06;           	// endereço ano
-	config[5] = ano;            	// 17h
 
-	// Sinalizar operação de escrita a partir dos endereçoes apontador:
+char * RTCConfig(char date, char first, char second, char third){
 
-	//Escreva o conteudo de config[1] em config[0]
-	I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char*)&config[0], 2);
-	//Escreva o conteudo de config[3] em config[2]
-	I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char*)&config[2], 2);
-	//Escreva o conteudo de config[5] em config[4]
-	I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char*)&config[4], 2);
+    static char config[6];
+    if(date) {
+    	config[0] = 0x04;
+    	config[1] = first;
+    	config[2] = 0x05;
+    	config[3] = second;
+    	config[4] = 0x06;
+    	config[5] = third;
+    }
 
-	return config;
+    else {
+        config[0] = 0x00;            // endereço segundos
+        config[1] = 0x80 | third;  // 00s com ST ligado
+        config[2] = 0x01;            // endereço minutos
+        config[3] = second;
+        config[4] = 0x02;            // endereço horas
+        config[5] = first;
+    }
+
+     // Sinalizar operação de escrita a partir dos endereçoes apontador:
+
+    //Escreva o conteudo de config[1] em config[0]
+    I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char*)&config[0], 2);
+    //Escreva o conteudo de config[3] em config[2]
+    I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char*)&config[2], 2);
+    //Escreva o conteudo de config[5] em config[4]
+    I2C_Transmitir(K_ENDERECO_MCP7940, (unsigned char*)&config[4], 2);
+
+    return config;
+
 }
